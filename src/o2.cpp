@@ -121,6 +121,17 @@ void O2::setRequestUrl(const QString &value) {
     Q_EMIT requestUrlChanged();
 }
 
+QVariantMap O2::extraRequestParams()
+{
+  return extraReqParams_;
+}
+
+void O2::setExtraRequestParams(const QVariantMap &value)
+{
+  extraReqParams_ = value;
+  Q_EMIT extraRequestParamsChanged();
+}
+
 QString O2::tokenUrl() {
     return tokenUrl_.toString();
 }
@@ -165,12 +176,15 @@ void O2::link() {
 
         // Assemble intial authentication URL
         QList<QPair<QString, QString> > parameters;
-        parameters.append(qMakePair(QString(O2_OAUTH2_RESPONSE_TYPE), (grantFlow_ == GrantFlowAuthorizationCode)? QString(O2_OAUTH2_GRANT_TYPE_CODE): QString(O2_OAUTH2_GRANT_TYPE_TOKEN)));
+        parameters.append(qMakePair(QString(O2_OAUTH2_RESPONSE_TYPE),
+                                    (grantFlow_ == GrantFlowAuthorizationCode)? QString(O2_OAUTH2_GRANT_TYPE_CODE): QString(O2_OAUTH2_GRANT_TYPE_TOKEN)));
         parameters.append(qMakePair(QString(O2_OAUTH2_CLIENT_ID), clientId_));
         parameters.append(qMakePair(QString(O2_OAUTH2_REDIRECT_URI), redirectUri_));
         parameters.append(qMakePair(QString(O2_OAUTH2_SCOPE), scope_));
         parameters.append(qMakePair(QString(O2_OAUTH2_API_KEY), apiKey_));
-
+        foreach (QString key, extraRequestParams().keys()) {
+            parameters.append(qMakePair(key, extraRequestParams().value(key).toString()));
+        }
         // Show authentication URL with a web browser
         QUrl url(requestUrl_);
         addQueryParametersToUrl(url, parameters);
@@ -185,6 +199,9 @@ void O2::link() {
         parameters.append(O0RequestParameter(O2_OAUTH2_GRANT_TYPE, O2_OAUTH2_GRANT_TYPE_PASSWORD));
         parameters.append(O0RequestParameter(O2_OAUTH2_SCOPE, scope_.toUtf8()));
         parameters.append(O0RequestParameter(O2_OAUTH2_API_KEY, apiKey_.toUtf8()));
+        foreach (QString key, extraRequestParams().keys()) {
+            parameters.append(O0RequestParameter(key.toUtf8(), extraRequestParams().value(key).toByteArray()));
+        }
         QByteArray payload = O0BaseAuth::createQueryParameters(parameters);
 
         QUrl url(tokenUrl_);
