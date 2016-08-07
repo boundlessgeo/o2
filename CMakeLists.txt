@@ -21,7 +21,7 @@ set(o2_LIB_SUFFIX "" CACHE STRING "Suffix for install 'lib' directory, e.g. 64 f
 
 option(o2_SHOW_TRACE "Show debugging messages" OFF)
 if(NOT o2_SHOW_TRACE)
-  add_definitions(-DQT_NO_DEBUG_OUTPUT=1)
+  add_definitions(-UQT_NO_DEBUG_OUTPUT)
 endif()
 
 option(o2_WITH_TWITTER "Authenticate with Twitter" OFF)
