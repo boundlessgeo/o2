@@ -155,7 +155,7 @@ void O2::link() {
     setRefreshToken(QString());
     setExpires(0);
 
-    if (grantFlow_ == GrantFlowAuthorizationCode) {
+    if (grantFlow_ == GrantFlowAuthorizationCode || grantFlow_ == GrantFlowImplicit) {
         // Start listening to authentication replies
         replyServer_->listen(QHostAddress::Any, localPort_);
 
