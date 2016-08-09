@@ -256,6 +256,9 @@ void O2::onVerificationReceived(const QMap<QString, QString> response) {
         parameters.insert(O2_OAUTH2_REDIRECT_URI, redirectUri_);
         parameters.insert(O2_OAUTH2_GRANT_TYPE, O2_AUTHORIZATION_CODE);
         QByteArray data = buildRequestBody(parameters);
+
+        qDebug() << QString("O2::onVerificationReceived: Exchange access code data:\n%1").arg(QString(data));
+
         QNetworkReply *tokenReply = manager_->post(tokenRequest, data);
         timedReplies_.add(tokenReply);
         connect(tokenReply, SIGNAL(finished()), this, SLOT(onTokenReplyFinished()), Qt::QueuedConnection);
@@ -281,7 +284,18 @@ void O2::onTokenReplyFinished() {
     QNetworkReply *tokenReply = qobject_cast<QNetworkReply *>(sender());
     if (tokenReply->error() == QNetworkReply::NoError) {
         QByteArray replyData = tokenReply->readAll();
+
+        // dump replyData
+        qDebug() << "O2::onTokenReplyFinished: replyData\n";
+        qDebug() << QString( replyData );
+
         QVariantMap tokens = parseTokenResponse(replyData);
+
+        // dump tokens
+        qDebug() << "Tokens:\n";
+        foreach (QString key, tokens.keys()) {
+            qDebug() << key << ": "<< tokens.value(key).toString();
+        }
 
         // Check for mandatory tokens
         if (tokens.contains(O2_OAUTH2_ACCESS_TOKEN)) {
