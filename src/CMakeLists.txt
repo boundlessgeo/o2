@@ -146,7 +146,12 @@ if(BUILD_SHARED_LIBS AND APPLE AND POLICY CMP0042) # in CMake >= 2.8.12
     set(CMAKE_MACOSX_RPATH OFF) # don't embed @rpath in install name
 endif(BUILD_SHARED_LIBS AND APPLE AND POLICY CMP0042)
 
-add_library( o2 ${o2_SRCS} ${o2_HDRS} )
+if(BUILD_SHARED_LIBS)
+  add_library( o2 SHARED ${o2_SRCS} ${o2_HDRS} )
+  add_library( o2_static STATIC ${o2_SRCS} ${o2_HDRS} )
+else(BUILD_SHARED_LIBS)
+  add_library( o2 STATIC ${o2_SRCS} ${o2_HDRS} )
+endif(BUILD_SHARED_LIBS)
 
 if(o2_WITH_QT5)
     target_link_libraries( o2 Qt5::Core Qt5::Network)
@@ -163,6 +168,9 @@ if(BUILD_SHARED_LIBS)
     set_target_properties(o2
         PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION ${API_VERSION}
     )
+    set_target_properties(o2_static
+        PROPERTIES POSITION_INDEPENDENT_CODE TRUE
+    )
 else(BUILD_SHARED_LIBS)
     # needed for statically linked o2 in shared libs on x86_64
     set_target_properties(o2
@@ -174,8 +182,12 @@ install(TARGETS o2
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib${o2_LIB_SUFFIX}
     ARCHIVE DESTINATION lib${o2_LIB_SUFFIX}
+    PUBLIC_HEADER DESTINATION include/o2
 )
 
-install(FILES ${o2_HDRS}
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/o2
-)
+if(BUILD_SHARED_LIBS)
+    install(TARGETS o2_static
+        ARCHIVE DESTINATION lib${o2_LIB_SUFFIX}
+        PUBLIC_HEADER DESTINATION include/o2
+    )
+endif(BUILD_SHARED_LIBS)
