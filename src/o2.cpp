@@ -262,6 +262,24 @@ void O2::onVerificationReceived(const QMap<QString, QString> response) {
         timedReplies_.add(tokenReply);
         connect(tokenReply, SIGNAL(finished()), this, SLOT(onTokenReplyFinished()), Qt::QueuedConnection);
         connect(tokenReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onTokenReplyError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
+    } else if (grantFlow_ == GrantFlowImplicit) {
+      // Check for mandatory tokens
+      if (response.contains(O2_OAUTH2_ACCESS_TOKEN)) {
+          setToken(response.value(O2_OAUTH2_ACCESS_TOKEN));
+          if (response.contains(O2_OAUTH2_EXPIRES_IN)) {
+            bool ok = false;
+            int expiresIn = response.value(O2_OAUTH2_EXPIRES_IN).toInt(&ok);
+            if (ok) {
+                qDebug() << "O2::onVerificationReceived: Token expires in" << expiresIn << "seconds";
+                setExpires(QDateTime::currentMSecsSinceEpoch() / 1000 + expiresIn);
+            }
+          }
+          setLinked(true);
+          Q_EMIT linkingSucceeded();
+      }/* else {
+          qWarning() << "O2::onVerificationReceived: oauth_token missing from response";
+          Q_EMIT linkingFailed();
+      }*/
     } else {
         setToken(response.value(O2_OAUTH2_ACCESS_TOKEN));
         setRefreshToken(response.value(O2_OAUTH2_REFRESH_TOKEN));
