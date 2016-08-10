@@ -180,7 +180,7 @@ void O2::link() {
                                     (grantFlow_ == GrantFlowAuthorizationCode)? QString(O2_OAUTH2_GRANT_TYPE_CODE): QString(O2_OAUTH2_GRANT_TYPE_TOKEN)));
         parameters.append(qMakePair(QString(O2_OAUTH2_CLIENT_ID), clientId_));
         parameters.append(qMakePair(QString(O2_OAUTH2_REDIRECT_URI), redirectUri_));
-        parameters.append(qMakePair(QString(O2_OAUTH2_SCOPE), scope_));
+        parameters.append(qMakePair(QString(O2_OAUTH2_SCOPE), scope_.replace( " ", "+" )));
         if ( !apiKey_.isEmpty() )
             parameters.append(qMakePair(QString(O2_OAUTH2_API_KEY), apiKey_));
         foreach (QString key, extraRequestParams().keys()) {
