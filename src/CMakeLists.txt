@@ -193,15 +193,17 @@ install(TARGETS o2
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib${o2_LIB_SUFFIX}
     ARCHIVE DESTINATION lib${o2_LIB_SUFFIX}
-    PUBLIC_HEADER DESTINATION include/o2
 )
 
 if(BUILD_SHARED_LIBS)
     install(TARGETS o2_static
         ARCHIVE DESTINATION lib${o2_LIB_SUFFIX}
-        PUBLIC_HEADER DESTINATION include/o2
     )
 endif(BUILD_SHARED_LIBS)
+
+install(FILES ${o2_HDRS}
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/o2
+)
 
 message(STATUS "Writing pkg-config file...")
 configure_file(${CMAKE_SOURCE_DIR}/o2.pc.cmake ${CMAKE_BINARY_DIR}/o2.pc @ONLY)
