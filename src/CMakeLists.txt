@@ -161,20 +161,23 @@ endif(o2_WITH_QT5)
 
 if(BUILD_SHARED_LIBS)
     if(APPLE)
-      set_target_properties(o2
-          PROPERTIES INSTALL_NAME_DIR ${CMAKE_INSTALL_PREFIX}/lib
+      set_target_properties(o2 PROPERTIES
+          INSTALL_NAME_DIR ${CMAKE_INSTALL_PREFIX}/lib
+          PUBLIC_HEADER "${o2_HDRS}"
       )
     endif(APPLE)
-    set_target_properties(o2
-        PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION ${API_VERSION}
+    set_target_properties(o2 PROPERTIES
+        VERSION ${PROJECT_VERSION} SOVERSION ${API_VERSION}
     )
-    set_target_properties(o2_static
-        PROPERTIES POSITION_INDEPENDENT_CODE TRUE
+    set_target_properties(o2_static PROPERTIES
+        POSITION_INDEPENDENT_CODE TRUE
+        PUBLIC_HEADER "${o2_HDRS}"
     )
 else(BUILD_SHARED_LIBS)
     # needed for statically linked o2 in shared libs on x86_64
-    set_target_properties(o2
-        PROPERTIES POSITION_INDEPENDENT_CODE TRUE
+    set_target_properties(o2 PROPERTIES
+        POSITION_INDEPENDENT_CODE TRUE
+        PUBLIC_HEADER "${o2_HDRS}"
     )
 endif(BUILD_SHARED_LIBS)
 
@@ -182,6 +185,7 @@ install(TARGETS o2
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib${o2_LIB_SUFFIX}
     ARCHIVE DESTINATION lib${o2_LIB_SUFFIX}
+    PUBLIC_HEADER DESTINATION include/o2
 )
 
 if(BUILD_SHARED_LIBS)
@@ -189,7 +193,3 @@ if(BUILD_SHARED_LIBS)
         ARCHIVE DESTINATION lib${o2_LIB_SUFFIX}
     )
 endif(BUILD_SHARED_LIBS)
-
-install(FILES ${o2_HDRS}
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/o2
-)
