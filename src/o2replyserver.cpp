@@ -81,7 +81,7 @@ void O2ReplyServer::onBytesReady() {
 QMap<QString, QString> O2ReplyServer::parseQueryParams(QByteArray *data) {
     qDebug() << "O2ReplyServer::parseQueryParams";
 
-    qDebug() << QString("O2ReplyServer::parseQueryParams data:\n%1").arg(QString(*data));
+    //qDebug() << QString("O2ReplyServer::parseQueryParams data:\n%1").arg(QString(*data));
 
     QString splitGetLine = QString(*data).split("\r\n").first();
     splitGetLine.remove("GET ");
