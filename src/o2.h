@@ -116,7 +116,7 @@ public Q_SLOTS:
     Q_INVOKABLE void refresh();
 
     /// Handle situation where reply server has opted to close its connection
-    void serverHasClosed();
+    void serverHasClosed(bool paramsfound = false);
 
 Q_SIGNALS:
     /// Emitted when a token refresh has been completed or failed.
