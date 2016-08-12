@@ -156,8 +156,14 @@ endif(BUILD_SHARED_LIBS)
 
 if(o2_WITH_QT5)
     target_link_libraries( o2 Qt5::Core Qt5::Network)
+    if(BUILD_SHARED_LIBS)
+        target_link_libraries( o2_static Qt5::Core Qt5::Network)
+    endif(BUILD_SHARED_LIBS)
 else(o2_WITH_QT5)
     target_link_libraries( o2 ${QT_LIBRARIES} )
+    if(BUILD_SHARED_LIBS)
+        target_link_libraries( o2_static ${QT_LIBRARIES})
+    endif(BUILD_SHARED_LIBS)
 endif(o2_WITH_QT5)
 
 if(BUILD_SHARED_LIBS)
@@ -172,7 +178,6 @@ if(BUILD_SHARED_LIBS)
     )
     set_target_properties(o2_static PROPERTIES
         POSITION_INDEPENDENT_CODE TRUE
-        PUBLIC_HEADER "${o2_HDRS}"
     )
 else(BUILD_SHARED_LIBS)
     # needed for statically linked o2 in shared libs on x86_64
