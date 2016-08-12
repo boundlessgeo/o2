@@ -314,15 +314,15 @@ void O2::onTokenReplyFinished() {
         QByteArray replyData = tokenReply->readAll();
 
         // dump replyData
-        qDebug() << "O2::onTokenReplyFinished: replyData\n";
-        qDebug() << QString( replyData );
+        //qDebug() << "O2::onTokenReplyFinished: replyData\n";
+        //qDebug() << QString( replyData );
 
         QVariantMap tokens = parseTokenResponse(replyData);
 
         // dump tokens
         qDebug() << "O2::onTokenReplyFinished: Tokens returned:\n";
         foreach (QString key, tokens.keys()) {
-            qDebug() << key << ": "<< tokens.value( key ).toString().left( 3 );
+            qDebug() << key << ": "<< tokens.value( key ).toString().left( 3 ) << "...";
         }
 
         // Check for mandatory tokens
