@@ -74,7 +74,7 @@ O2::O2(QObject *parent, QNetworkAccessManager *manager): O0BaseAuth(parent) {
     localhostPolicy_ = QString(O2_CALLBACK_URL);
     qRegisterMetaType<QNetworkReply::NetworkError>("QNetworkReply::NetworkError");
     connect(replyServer_, SIGNAL(verificationReceived(QMap<QString,QString>)), this, SLOT(onVerificationReceived(QMap<QString,QString>)));
-    connect(replyServer_, SIGNAL(serverClosed()), this, SLOT(serverHasClosed()));
+    connect(replyServer_, SIGNAL(serverClosed(bool)), this, SLOT(serverHasClosed(bool)));
 }
 
 O2::GrantFlow O2::grantFlow() {
@@ -447,9 +447,10 @@ void O2::onRefreshError(QNetworkReply::NetworkError error) {
     Q_EMIT refreshFinished(error);
 }
 
-void O2::serverHasClosed()
+void O2::serverHasClosed(bool paramsfound)
 {
-    if ( !linked() ) {
+    if ( !paramsfound ) {
+        // server has probably timed out after receiving first response
         Q_EMIT linkingFailed();
     }
 }

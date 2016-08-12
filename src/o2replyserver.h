@@ -31,13 +31,13 @@ public:
 
 Q_SIGNALS:
     void verificationReceived(QMap<QString, QString>);
-    void serverClosed();
+    void serverClosed(bool); // whether it has found parameters
 
 public Q_SLOTS:
     void onIncomingConnection();
     void onBytesReady();
     QMap<QString, QString> parseQueryParams(QByteArray *data);
-    void closeServer(QTcpSocket *socket = 0);
+    void closeServer(QTcpSocket *socket = 0, bool hasparameters = false);
 
 protected:
     QByteArray replyContent_;
