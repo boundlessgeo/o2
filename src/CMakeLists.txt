@@ -211,6 +211,10 @@ if(BUILD_SHARED_LIBS)
     )
 endif(BUILD_SHARED_LIBS)
 
+install(FILES ${o2_HDRS}
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/o2
+)
+
 message(STATUS "Writing pkg-config file...")
 configure_file(${CMAKE_SOURCE_DIR}/o2.pc.cmake ${CMAKE_BINARY_DIR}/o2.pc @ONLY)
 install(FILES ${CMAKE_BINARY_DIR}/o2.pc DESTINATION "${CMAKE_INSTALL_PREFIX}/lib${o2_LIB_SUFFIX}/pkgconfig/")
